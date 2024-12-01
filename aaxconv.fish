@@ -21,5 +21,20 @@ function aaxconv
     # Run the ffmpeg command
     ffmpeg -y -activation_bytes $activation_bytes -i $input_file -map_metadata 0 -id3v2_version 3 -codec:a copy -vn $output_file
 
-    echo "Conversion complete: $output_file"
+    # Check if the conversion was successful
+    if test $status -eq 0
+        echo "Conversion complete: $output_file"
+
+        # Create the "done" folder if it doesn't exist
+        if not test -d done
+            mkdir done
+        end
+
+        # Move the original .aax file to the "done" folder
+        mv $input_file done/
+        echo "Moved $input_file to 'done/' folder."
+    else
+        echo "Error during conversion."
+        return 1
+    end
 end
